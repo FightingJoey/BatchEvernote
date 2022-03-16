@@ -2,8 +2,10 @@
 
 from evernote.api.client import EvernoteClient
 import evernote.edam.type.ttypes as Types
+from evernote.edam.notestore.ttypes import NoteFilter, NotesMetadataResultSpec
 from pygmstyles import markdown2
 import os
+import json
 
 def getExtras():
     from pygmstyles.github import GithubStyle
@@ -35,6 +37,50 @@ def getContent(body, wrapper_style):
     content += '</en-note>'
     return content
 
+def extractTags(tags):
+    try:
+        tags = json.loads(tags)
+    except:
+        tags = [t.strip(' \t') for t in tags and tags.split(",") or []]
+    return tags
+
+# if (nguid) {
+#     vscode.window.setStatusBarMessage("Updating to server.", 2000);
+#     const updateNote = await updateNoteOnServer(meta, content, resources, nguid);
+#     updateNote.resources = resources;
+#     if (!notesMap[updateNote.notebookGuid]) {
+#       notesMap[updateNote.notebookGuid] = [updateNote];
+#     } else {
+#       notesMap[updateNote.notebookGuid].push(updateNote);
+#     }
+#     localNote[doc.fileName] = updateNote;
+#     let notebookName = notebooks.find(notebook => notebook.guid === updateNote.notebookGuid).name;
+#     attachmentsCache[doc.fileName] = [];
+#     return vscode.window.showInformationMessage(`${notebookName}>>${title} update to server successfully.`);
+#   } else {
+#     vscode.window.setStatusBarMessage("Creating the note.", 2000);
+#     const createdNote = await createNote(meta, content, resources);
+#     createdNote.resources = resources;
+#     if (!notesMap[createdNote.notebookGuid]) {
+#       notesMap[createdNote.notebookGuid] = [createdNote];
+#     } else {
+#       notesMap[createdNote.notebookGuid].push(createdNote);
+#     }
+#     localNote[doc.fileName] = createdNote;
+#     let notebookName = notebooks.find(notebook => notebook.guid === createdNote.notebookGuid).name;
+#     attachmentsCache[doc.fileName] = [];
+#     return vscode.window.showInformationMessage(`${notebookName}>>${title} created successfully.`);
+#   }
+
+def getNoteGuid(meta, client, noteStore):
+    title = meta.get("title")
+    intitle = 'intitle:' + '"' + title + '"'
+    re = client.listMyNotes(intitle)
+    filter = NoteFilter(words=intitle, ascending=True)
+    noteStore.findNotesMetadata(authenticationToken='')
+    resul = re.notes
+    arrayLength = resul.length
+    pass
 
 if __name__ == '__main__':
     infile = open('/Users/kaola/Nutstore Files/Notes/00@未分类/洛克菲勒写给儿子的38封信 - 读书笔记.md','r')
@@ -44,6 +90,8 @@ if __name__ == '__main__':
     MD_EXTRAS, wrapper_style = getExtras()
     body = markdown2.markdown(contents, extras=MD_EXTRAS)
 
+    meta = body.metadata or {}
+
     dev_token = "S=s61:U=bc922e:E=17fb42a1455:C=17f901d8c90:P=1cd:A=en-devtoken:V=2:H=a965be21f77c3c01c44880df4500d9b3"
     client = EvernoteClient(token=dev_token, sandbox=False, china=True)
     userStore = client.get_user_store()
@@ -52,15 +100,35 @@ if __name__ == '__main__':
     # print(user)
 
     noteStore = client.get_note_store()
-    # notebooks = noteStore.listNotebooks()
-    # for n in notebooks:
-    #     print(n.name)
 
-    for i in range(2):
-        note = Types.Note()
-        note.title = "I'm a test note! %d" % i
-        note.content = getContent(body, wrapper_style)
-        note = noteStore.createNote(note)
+    nguid = None
+    title = meta.get("title")
+    intitle = 'intitle:' + '"' + title + '"'
+    # re = client.listMyNotes(intitle)
+    filter = NoteFilter(words=intitle, ascending=True)
+    result = NotesMetadataResultSpec(includeTitle=True, includeNotebookGuid=True, includeTagGuids=True)
+    re = noteStore.findNotesMetadata(dev_token, filter, 0, 500, result)
+    resul = re.notes
+    arrayLength = len(re.notes)
+    for i in range(0, arrayLength):
+        if resul[i].title == title:
+            nguid = resul[i].guid
+
+    note = Types.Note()
+    note.title = meta.get("title", note.title)
+    tags = meta.get("tags", note.tagNames)
+    if tags is not None:
+        tags = extractTags(tags)
+    note.tagNames = tags
+    note.content = getContent(body, wrapper_style)
+    if "notebook" in meta:
+        notebooks = noteStore.listNotebooks()
+        for nb in notebooks:
+            if nb.name == meta["notebook"]:
+                note.notebookGuid = nb.guid
+                break
+
+    note = noteStore.createNote(note)
 
     
 
