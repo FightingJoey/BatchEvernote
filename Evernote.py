@@ -84,9 +84,9 @@ class EverNoteManager():
     _notebook_by_name = None
     _notebooks_cache = None
 
-    def __init__(self, token):
+    def __init__(self, token, sandbox=False):
         self.dev_token = token
-        self.client = EvernoteClient(token=self.dev_token, sandbox=False, china=True)
+        self.client = EvernoteClient(token=self.dev_token, sandbox=sandbox, china=True)
         self.userStore = self.client.get_user_store()
         self.user = self.userStore.getUser()
         self.noteStore = self.client.get_note_store()
@@ -245,11 +245,29 @@ class EverNoteManager():
 
 if __name__ == '__main__':
     root_path = "/Users/kaola/Nutstore Files/Notes/00@未分类/Test/"
-    token = "S=s61:U=bc922e:E=17fb42a1455:C=17f901d8c90:P=1cd:A=en-devtoken:V=2:H=a965be21f77c3c01c44880df4500d9b3"
-    manager = EverNoteManager(token)
+    # token = "S=s61:U=bc922e:E=17fb42a1455:C=17f901d8c90:P=1cd:A=en-devtoken:V=2:H=a965be21f77c3c01c44880df4500d9b3"
+    # 开发环境一年有效期token
+    token = "S=s1:U=4b1:E=186f3e247ce:C=17f9c311a10:P=185:A=geselle-joy:V=2:B=a3d3bbf6-f93d-4473-aa03-a4899fbab9a8:H=6430e5abd59e4af88039e281d3191e99"
+    manager = EverNoteManager(token, True)
     manager.traversePath(root_path)
     manager.batchPushToEver()
+
+    # client = EvernoteClient(consumer_key='geselle-joy', consumer_secret='11d19a384c2ed641', sandbox=True, china=True)
+    # request_token = client.get_request_token('http://127.0.0.1:8000/')
+    # print(request_token)
+    # ss = client.get_authorize_url(request_token)
+    # print(ss)
+
+    # access_token = client.get_access_token(
+    #     'geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2',
+    #     '4AFF0DD081CC1555653907C9907F0BE4',
+    #     'EABF08D4B266982C0191FCDB65F0B1EE'
+    # )
+    # print(access_token)
     
+    # http://127.0.0.1:8000/?oauth_token=geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2&oauth_verifier=EABF08D4B266982C0191FCDB65F0B1EE&sandbox_lnb=false
+
+    # {'oauth_token': 'geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2', 'oauth_token_secret': '4AFF0DD081CC1555653907C9907F0BE4', 'oauth_callback_confirmed': 'true'}
 
     
     
