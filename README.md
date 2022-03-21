@@ -1,6 +1,4 @@
 # BatchEvernote
-批量将markdown笔记同步到印象笔记中
-
 作为开发者，平时喜欢使用markdown写一些文章，然后为了将笔记同步到印象笔记中，之前也采用了很多方案：
 
 - Sublime Text 插件：[sublime-evernote](https://github.com/bordaigorl/sublime-evernote)
@@ -9,7 +7,9 @@
 
 但是他们都有一些局限性，一次只能上传一篇文章，而我有时候会写很多篇，这样同步的时候就会很麻烦，就导致我很多时候懒得去同步。结果在经历了一次电脑意外进水，硬盘内容全部丢失之后，我决定还是自己写一个，可以批量将markdown笔记同步到印象笔记的python脚本。
 
-在编写的时候，很大一部分内容参考了 sublime-evernote 插件和印象笔记开发者文档，下面把使用方法记录下。
+在编写的时候，很大一部分内容参考了 sublime-evernote 插件和印象笔记开发者文档。
+
+> 目前这个脚本还只适合开发者使用，因为它需要python3环境和一些python库，后续可能会开发一个专门的Mac APP 来做这件事，但是估计要等一段时间了~
 
 ### 短期授权
 
