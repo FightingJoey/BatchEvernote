@@ -4,12 +4,18 @@ import json
 import time
 import sys
 
+package_file = os.path.normpath(os.path.abspath(__file__))
+package_path = os.path.dirname(package_file)
+lib_path = os.path.join(package_path, "lib")
+
+if lib_path not in sys.path:
+    sys.path.append(lib_path)
+
 import evernote.edam.type.ttypes as Types
 from evernote.api.client import EvernoteClient
 from evernote.edam.notestore.ttypes import NoteFilter, NotesMetadataResultSpec
 from evernote.edam.error.ttypes import EDAMErrorCode, EDAMUserException, EDAMSystemException, EDAMNotFoundException
-from pygmstyles import markdown2
-
+import markdown2
 
 
 ecode = EDAMErrorCode
@@ -242,7 +248,7 @@ class EverNoteManager():
                         self.notes.append((path, filename))
             else:
                 self.traversePath(path)
-    
+
 
 if __name__ == '__main__':
     if not sys.version_info.major == 3 and sys.version_info.minor >= 5:
@@ -257,27 +263,3 @@ if __name__ == '__main__':
     manager = EverNoteManager(token, True)
     manager.traversePath(root_path)
     manager.batchPushToEver()
-
-    # client = EvernoteClient(consumer_key='geselle-joy', consumer_secret='11d19a384c2ed641', sandbox=True, china=True)
-    # request_token = client.get_request_token('http://127.0.0.1:8000/')
-    # print(request_token)
-    # ss = client.get_authorize_url(request_token)
-    # print(ss)
-
-    # access_token = client.get_access_token(
-    #     'geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2',
-    #     '4AFF0DD081CC1555653907C9907F0BE4',
-    #     'EABF08D4B266982C0191FCDB65F0B1EE'
-    # )
-    # print(access_token)
-    
-    # http://127.0.0.1:8000/?oauth_token=geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2&oauth_verifier=EABF08D4B266982C0191FCDB65F0B1EE&sandbox_lnb=false
-
-    # {'oauth_token': 'geselle-joy.17F9C2F7DB2.687474703A2F2F3132372E302E302E313A383030302F.CE5277C172B4DCB98415DEC7CD9FA5C2', 'oauth_token_secret': '4AFF0DD081CC1555653907C9907F0BE4', 'oauth_callback_confirmed': 'true'}
-
-    
-    
-
-
-    
-
