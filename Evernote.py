@@ -2,6 +2,7 @@
 import os
 import json
 import time
+import sys
 
 import evernote.edam.type.ttypes as Types
 from evernote.api.client import EvernoteClient
@@ -244,6 +245,11 @@ class EverNoteManager():
     
 
 if __name__ == '__main__':
+    if not sys.version_info.major == 3 and sys.version_info.minor >= 5:
+        print("This script requires Python 3.5 or higher!")
+        print("You are using Python {}.{}.".format(sys.version_info.major, sys.version_info.minor))
+        sys.exit(1)
+
     root_path = "/Users/kaola/Nutstore Files/Notes/00@未分类/Test/"
     # token = "S=s61:U=bc922e:E=17fb42a1455:C=17f901d8c90:P=1cd:A=en-devtoken:V=2:H=a965be21f77c3c01c44880df4500d9b3"
     # 开发环境一年有效期token
