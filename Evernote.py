@@ -208,7 +208,7 @@ class EverNoteManager():
     # 批量推送笔记到evernote
     def batchPushToEver(self):
         if len(self.notes) == 0:
-            print("无需更新")
+            print("Don't need to update")
             return
 
         for (path, title) in self.notes:
