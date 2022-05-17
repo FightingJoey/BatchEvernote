@@ -208,7 +208,7 @@ class EverNoteManager():
     # 批量推送笔记到evernote
     def batchPushToEver(self):
         if len(self.notes) == 0:
-            print("Don't need to update")
+            print("无需更新")
             return
 
         for (path, title) in self.notes:
@@ -256,10 +256,10 @@ if __name__ == '__main__':
         print("You are using Python {}.{}.".format(sys.version_info.major, sys.version_info.minor))
         sys.exit(1)
 
-    root_path = "/Users/kaola/Nutstore Files/Notes/00@未分类/Test/"
-    # token = "S=s61:U=bc922e:E=17fb42a1455:C=17f901d8c90:P=1cd:A=en-devtoken:V=2:H=a965be21f77c3c01c44880df4500d9b3"
-    # 开发环境一年有效期token
-    token = "S=s1:U=4b1:E=186f3e247ce:C=17f9c311a10:P=185:A=geselle-joy:V=2:B=a3d3bbf6-f93d-4473-aa03-a4899fbab9a8:H=6430e5abd59e4af88039e281d3191e99"
-    manager = EverNoteManager(token, True)
+    #获取token https://app.yinxiang.com/api/DeveloperToken.action
+
+    root_path = "/Users/joey/Nutstore Files/Notes/"
+    token = ""
+    manager = EverNoteManager(token, False)
     manager.traversePath(root_path)
     manager.batchPushToEver()
