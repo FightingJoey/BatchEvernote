@@ -187,10 +187,11 @@ class EverNoteManager():
                 if nb.name == meta["notebook"]:
                     note.notebookGuid = nb.guid
                     break
+        print(note)
         return note
 
     # 发送笔记
-    def sendNote(self, note, isUpdate):
+    def sendNote(self, note, isUpdate, filepath):
         try:
             if isUpdate:
                 cnote = self.noteStore.updateNote(self.dev_token, note)
@@ -199,11 +200,11 @@ class EverNoteManager():
                 cnote = self.noteStore.createNote(self.dev_token, note)
                 print("Create note: %s" % note.title)
         except EDAMUserException as e:
-            print('Evernote error:\n%s' % explain_error(e))
+            print('Evernote error:\n%s' % explain_error(e), filepath)
         except EDAMSystemException as e:
-            print('Evernote error:\n%s' % explain_error(e))
+            print('Evernote error:\n%s' % explain_error(e), filepath)
         except Exception as e:
-            print('Evernote plugin error %s' % e)
+            print('Evernote plugin error %s' % e, filepath)
 
     # 批量推送笔记到evernote
     def batchPushToEver(self):
@@ -215,12 +216,12 @@ class EverNoteManager():
             infile = open(path,'r')
             contents = infile.read()
             infile.close()
-            self.pushToEver(contents)
+            self.pushToEver(contents, path)
 
         self.setUploadtime()
 
     # 推送笔记到evernote
-    def pushToEver(self, contents):
+    def pushToEver(self, contents, filepath):
         body = markdown2.markdown(contents, extras=self.extras)
         
         if len(body.metadata.items()) > 0:
@@ -228,9 +229,9 @@ class EverNoteManager():
             note = self.createNote(meta, body)
             nguid = self.getNoteGuid(meta)
             note.guid = nguid
-            self.sendNote(note, nguid is not None)
+            self.sendNote(note, nguid is not None, filepath)
         else:
-            print('Note format error! Loss matedata')
+            print('Note format error! Loss matedata', filepath)
 
     # 获取目录中的所有文件
     def traversePath(self, root_path):
@@ -245,6 +246,7 @@ class EverNoteManager():
                     mtime = os.stat(path).st_mtime
                     # 如果文件修改时间超过上次上传笔记时间
                     if mtime > self.lastUploadTime:
+                        # print(path)
                         self.notes.append((path, filename))
             else:
                 self.traversePath(path)
@@ -259,7 +261,7 @@ if __name__ == '__main__':
     #获取token https://app.yinxiang.com/api/DeveloperToken.action
 
     root_path = "/Users/nxmbp/Documents/Nutstore/Notes/"
-    token = "S=s61:U=bc922e:E=186c08cc172:C=1869c803b98:P=1cd:A=en-devtoken:V=2:H=b3a312c5e198f7925f6de267740b08d2"
+    token = "S=s61:U=bc922e:E=187076fc089:C=186e3633c68:P=1cd:A=en-devtoken:V=2:H=b8cf4636ccbac27251e4cf76c3cc22da"
     manager = EverNoteManager(token, False)
     manager.traversePath(root_path)
     manager.batchPushToEver()

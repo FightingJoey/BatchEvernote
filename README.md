@@ -24,3 +24,18 @@
 基于OAuth的认证流程就是，用户在自己的设备上通过印象笔记账户认证你的应用程序的过程。用户必须通过印象笔记域名下的网站认证你的应用的访问权限(*app.yinxiang.com* 或者 *sandbox.yinxiang.com*)。在认证被授权（或是被拒绝）之后，印象笔记将会把用户重定向回你的应用程序，同时你会收到一些必要的信息，来取回一个access token。这个access token使你可以在用户的设备上使用这个用户的印象笔记的数据。
 
 由于我们的只是个脚本，暂时没办法使用这种方式。
+
+### 依赖
+
+- python 3.10 及以下版本
+
+- httplib2
+
+### 遇到的问题
+
+1. An invalid XML character (Unicode: 0x1b) was found in the element content of the document.
+
+   其实没有 0x1b 这个字符，但是有 x1b，找到删了就行了
+
+2. The element type "p" must be terminated by the matching end-tag "</p>".
+
