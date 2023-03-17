@@ -187,7 +187,7 @@ class EverNoteManager():
                 if nb.name == meta["notebook"]:
                     note.notebookGuid = nb.guid
                     break
-        print(note)
+        # print(note)
         return note
 
     # 发送笔记
