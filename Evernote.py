@@ -196,15 +196,20 @@ class EverNoteManager():
             if isUpdate:
                 cnote = self.noteStore.updateNote(self.dev_token, note)
                 print("Update note: %s" % note.title)
+                return "success"
             else:
                 cnote = self.noteStore.createNote(self.dev_token, note)
                 print("Create note: %s" % note.title)
+                return "success"
         except EDAMUserException as e:
             print('Evernote error:\n%s' % explain_error(e), filepath)
+            return 'Evernote error:\n%s' % explain_error(e) + filepath
         except EDAMSystemException as e:
             print('Evernote error:\n%s' % explain_error(e), filepath)
+            return 'Evernote error:\n%s' % explain_error(e) + filepath
         except Exception as e:
             print('Evernote plugin error %s' % e, filepath)
+            return 'Evernote plugin error %s' % e + filepath
 
     # 批量推送笔记到evernote
     def batchPushToEver(self):
@@ -212,11 +217,18 @@ class EverNoteManager():
             print("无需更新")
             return
 
+        errorMsg = ""
         for (path, title) in self.notes:
             infile = open(path,'r')
             contents = infile.read()
             infile.close()
-            self.pushToEver(contents, path)
+            msg = self.pushToEver(contents, path)
+            if msg != 'success':
+                errorMsg += msg + '\n'
+
+        time_path = os.path.join(os.getcwd(), 'errorMsg.txt')
+        with open(time_path,'a+') as f:
+            f.write(errorMsg)
 
         self.setUploadtime()
 
@@ -229,9 +241,10 @@ class EverNoteManager():
             note = self.createNote(meta, body)
             nguid = self.getNoteGuid(meta)
             note.guid = nguid
-            self.sendNote(note, nguid is not None, filepath)
+            return self.sendNote(note, nguid is not None, filepath)
         else:
             print('Note format error! Loss matedata', filepath)
+            return 'Note format error! Loss matedata' + filepath
 
     # 获取目录中的所有文件
     def traversePath(self, root_path):
