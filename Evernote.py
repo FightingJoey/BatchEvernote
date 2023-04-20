@@ -273,8 +273,9 @@ if __name__ == '__main__':
 
     #获取token https://app.yinxiang.com/api/DeveloperToken.action
 
-    root_path = "/Users/nxmbp/Documents/Nutstore/Notes/"
-    token = "S=s61:U=bc922e:E=187076fc089:C=186e3633c68:P=1cd:A=en-devtoken:V=2:H=b8cf4636ccbac27251e4cf76c3cc22da"
+    root_path = "/Users/joy/Documents/Nutstore/Notes/"
+    # token = "S=s61:U=bc922e:E=1873ab49d03:C=18716a81558:P=1cd:A=en-devtoken:V=2:H=a4c551255a215cddc7573e80f24c4540"
+    token = "S=s61:U=bc922e:E=18ef46a38de:C=1879cb90968:P=185:A=oimotis-6505:V=2:H=1c846c74e02426aa5262eab62bf16957"
     manager = EverNoteManager(token, False)
     manager.traversePath(root_path)
     manager.batchPushToEver()
